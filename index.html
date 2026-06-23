@@ -757,13 +757,14 @@
       <div class="card-title">🎧 Rahatlatıcı Müzik</div>
       <iframe
         class="spotify-frame"
-        src="https://open.spotify.com/playlist/1V2UpkNfg79JCZikSoJkNE?si=df7aee4dd1e241ea&pt=738908075e7560831304ad2af50003b6"
+        src="https://open.spotify.com/embed/playlist/1V2UpkNfg79JCZikSoJkNE?utm_source=generator&theme=0"
         width="100%"
         height="152"
         frameBorder="0"
         allowfullscreen=""
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
         loading="lazy"
+        
       ></iframe>
     </div>
 
@@ -913,11 +914,7 @@ function startBoot() {
 function runBootSequence() {
   const lines = [
     'LOVE OS v2.0 başlatılıyor...',
-    'Balım için özel mod: AKTİF ♡',
-    'Pixel karakterler yükleniyor...',
-    'Müzik listesi hazırlanıyor...',
-    'Pomodoro zamanlayıcı hazır...',
-    '> Sistem hazır. İyi çalışmalar ♡',
+    'Balım için özel mod: AKTİF ♡'
   ];
 
   const container = document.getElementById('boot-lines');
@@ -1157,6 +1154,13 @@ function updatePomoDisplay() {
 }
 
 function pomodoroStart() {
+
+  const scene = document.getElementById('library-scene');
+  const sceneVideo = document.getElementById('scene-video');
+  scene.classList.add('studying');
+  sceneVideo.play().catch(() => {});  // autoplay policy için catch
+  document.getElementById('library-status').textContent = 'Birlikte çalışıyoruz! 📖♡';
+  
   if (pomoRunning) return;
   pomoRunning = true;
 
@@ -1219,6 +1223,12 @@ function pomodoroReset() {
   sceneVideo.pause();
   sceneVideo.currentTime = 0;
   updatePomoDisplay();
+   const scene = document.getElementById('library-scene');
+  const sceneVideo = document.getElementById('scene-video');
+  scene.classList.remove('studying');
+  sceneVideo.pause();
+  sceneVideo.currentTime = 0;
+  document.getElementById('library-status').textContent = 'Pomodoro başlatınca birlikte masaya geçiyoruz ♡';
 }
 
 updatePomoDisplay();

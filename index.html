@@ -882,7 +882,7 @@ function runBootSequence() {
     document.getElementById('bottom-nav').style.display = 'flex';
     // FIX: video src'yi burada set et, kullanıcı etkileşiminden sonra yüklensin
     const sceneVideo = document.getElementById('scene-video');
-    sceneVideo.src = 'assets/library-characters.mp4';
+    sceneVideo.src = 'assets/ibrary-characters.mp4';
     sceneVideo.load();
   }, delay + 600);
 }
@@ -911,6 +911,26 @@ const notes = [
   'Mola vermek de çalışmaktır. 🫶',
   'Sen her şeyin üstesinden gelirsin balım. ♡',
   'Yorulursan dinlen, bırakma. İkisi farklı. 🌙',
+  'Seni seviyorum. Çok, çok seviyorum. 💖',
+  'İyi ki varsın. Gerçekten iyi ki. 🌟',
+  'Dünya seninle daha güzel bir yer. ♡',
+  'Bugün zor olabilir ama sen daha zor günleri atlattın. 💪',
+  'Şu an nasıl hissedersen hisset, yanlış değil. Her şey geçer. 🌈',
+  'Seni düşünüyorum. Her zaman. 💕',
+  'Bir bardak su iç, derin bir nefes al. İyi misin? ♡',
+  'Küçük adımlar da ilerlemektir. Kendine karşı nazik ol. 🌷',
+  'Bugün yeterince iyi yaptın. Gerçekten. ✨',
+  'Seni sevmek en güzel şeyim. İyi ki tanıdım seni. 💫',
+  'Hataların seni tanımlamaz. Sen çok daha fazlasısın. 🌸',
+  'Bu an geçecek. Ve sen çıkacaksın bunun içinden. ♡',
+  'İyi ki varsın balım. Hayatım seninle anlam kazandı. 💝',
+  'Yorgunsan dur. Durmak da cesaret ister. 🫶',
+  'Seni gururla izliyorum. Her gün. ✨',
+  'Kendine sarıl. Ben de sarılıyorum sana buradan. 🤗💕',
+  'Bugün ne kadar zor olursa olsun, seni sevmek hep kolay. ♡',
+  'Sen benim en sevdiğim insansın. Bu hiç değişmeyecek. 💖',
+  'Nefes al. Şu an güvendesin. Her şey yoluna girecek. 🌙',
+  'İyi ki seninleyim. İyi ki sen varsın. ♡',
 ];
 
 let lastNote = -1;
@@ -1036,16 +1056,14 @@ function flipMonkey() {
 }
 
 function playMonkeyVideo(src, reactionArr) {
-  // Hepsini gizle, videoyu göster
   monkeyEmoji.style.display    = 'none';
-  monkeySleepGif.style.display = 'none';  // FIX: gif'i de gizle
+  monkeySleepGif.style.display = 'none';
+  monkeyVideo.loop             = false;
   monkeyVideo.style.display    = 'block';
-  monkeyVideo.src = src;
+  monkeyVideo.src              = src;
   monkeyVideo.load();
   monkeyVideo.play().catch(() => resetMonkeyVisual());
-
   monkeyVideo.onended = () => resetMonkeyVisual();
-
   const reaction = reactionArr[Math.floor(Math.random() * reactionArr.length)];
   document.getElementById('monkey-reaction').textContent = reaction;
   spawnHearts(3);
@@ -1060,18 +1078,21 @@ function resetMonkeyVisual() {
   monkeyEmoji.style.display    = 'block';
 }
 
-// FIX: uyku için ayrı temiz fonksiyon
+// FIX: uyku için monkey-video elementini kullan, loop=true yap
 function sleepMonkey() {
-  monkeyVideo.pause();
-  monkeyVideo.style.display = 'none';
-  monkeyVideo.src           = '';
-  monkeyEmoji.style.display = 'none';
-
-  monkeySleepGif.src           = 'assets/monkey-sleep.mp4';
-  monkeySleepGif.style.display = 'block';
-  monkeySleepGif.load();
-  monkeySleepGif.play().catch(() => {});
-
+  monkeyEmoji.style.display    = 'none';
+  monkeySleepGif.style.display = 'none';
+  monkeyVideo.onended          = null;   // loop olduğu için onended iptal
+  monkeyVideo.loop             = true;
+  monkeyVideo.style.display    = 'block';
+  monkeyVideo.src              = 'assets/monkey-sleep.mp4';
+  monkeyVideo.load();
+  monkeyVideo.play().catch(() => {
+    monkeyVideo.style.display = 'none';
+    monkeyEmoji.style.display = 'block';
+    monkeyEmoji.textContent   = '😴';
+    setTimeout(() => { monkeyEmoji.textContent = '🐒'; }, 3000);
+  });
   document.getElementById('monkey-reaction').textContent = '💤 zzz... (uyuyor)';
 }
 

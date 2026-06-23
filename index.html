@@ -62,7 +62,6 @@
       pointer-events: none;
     }
 
-    /* GBA Console pixel art */
     .gba-wrapper {
       position: relative;
       width: min(340px, 90vw);
@@ -79,7 +78,6 @@
       filter: drop-shadow(0 20px 60px rgba(255,107,157,0.4));
     }
 
-    /* Scanline overlay on GBA screen */
     .gba-screen-content {
       position: absolute;
       top: 27%;
@@ -144,7 +142,6 @@
       50% { opacity: 1; }
     }
 
-    /* Boot animation overlay */
     #boot-overlay {
       position: fixed;
       inset: 0;
@@ -259,7 +256,6 @@
       line-height: 1.6;
     }
 
-    /* Cards */
     .card {
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,107,157,0.15);
@@ -277,7 +273,6 @@
       line-height: 1.8;
     }
 
-    /* Emergency Button */
     .emergency-btn {
       width: 100%;
       padding: 20px;
@@ -326,7 +321,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Spotify */
     .spotify-frame {
       border-radius: 12px;
       overflow: hidden;
@@ -431,7 +425,6 @@
       color: rgba(255,255,255,0.5);
     }
 
-    /* Characters */
     .library-scene {
       margin: 0 16px;
       border-radius: 16px;
@@ -458,7 +451,6 @@
     .library-scene.studying .scene-standing { opacity: 0; }
     .library-scene.studying .scene-studying { opacity: 1; }
 
-    /* Pomodoro */
     .pomodoro-card {
       margin: 16px;
       background: rgba(255,255,255,0.04);
@@ -546,7 +538,6 @@
     .breathe-label {
       font-family: var(--pixel);
       font-size: clamp(7px, 2.2vw, 9px);
-      color: var(--purple);
       color: #a78bfa;
       text-align: center;
       line-height: 2;
@@ -570,13 +561,8 @@
       background: radial-gradient(circle, rgba(167,139,250,0.5) 0%, rgba(124,58,237,0.2) 70%);
     }
 
-    .breathe-visual.hold {
-      transform: scale(1.5);
-    }
-
-    .breathe-visual.shrink {
-      transform: scale(1);
-    }
+    .breathe-visual.hold { transform: scale(1.5); }
+    .breathe-visual.shrink { transform: scale(1); }
 
     .breathe-phase {
       font-size: 13px;
@@ -626,22 +612,12 @@
       100% { opacity: 0; transform: translateY(-150px) scale(0.5); }
     }
 
-    /* PAGE HEADER */
     .page-header {
       padding: 20px 20px 8px;
       font-family: var(--pixel);
       font-size: clamp(9px, 3vw, 12px);
       color: var(--pink);
       line-height: 2;
-    }
-
-    /* ===== UTILS ===== */
-    .hearts-divider {
-      text-align: center;
-      color: rgba(255,107,157,0.3);
-      font-size: 18px;
-      padding: 4px 0;
-      letter-spacing: 8px;
     }
 
     .love-footer {
@@ -652,17 +628,10 @@
       font-style: italic;
     }
 
-    /* pixel corners */
-    .pixel-corner {
-      image-rendering: pixelated;
-    }
-
-    /* Scrollbar */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(255,107,157,0.3); border-radius: 2px; }
 
-    /* ===== TRANSITIONS ===== */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     }
@@ -670,49 +639,33 @@
 </head>
 <body>
 
-<!-- ===== STARS BACKGROUND ===== -->
 <div class="stars-bg" id="stars-bg"></div>
-
-<!-- ===== FLOATING HEARTS CONTAINER ===== -->
 <div class="floating-hearts" id="floating-hearts"></div>
 
 <!-- ===== INTRO SCREEN ===== -->
 <div id="intro-screen" onclick="startBoot()">
   <div class="gba-wrapper">
-    <!-- GBA SVG pixel art -->
     <svg class="gba-svg" viewBox="0 0 340 220" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-      <!-- Body -->
       <rect x="20" y="10" width="300" height="190" rx="40" ry="40" fill="#cc2233"/>
-      <!-- Top accent -->
       <rect x="30" y="10" width="280" height="20" rx="20" ry="20" fill="#dd3344"/>
-      <!-- Screen bezel -->
       <rect x="80" y="35" width="185" height="130" rx="8" fill="#222"/>
-      <!-- Screen -->
       <rect x="88" y="42" width="169" height="116" rx="4" fill="#0a1628"/>
-      <!-- Screen shine -->
       <rect x="90" y="44" width="80" height="4" rx="2" fill="rgba(255,255,255,0.12)"/>
-      <!-- D-pad -->
       <rect x="30" y="95" width="14" height="40" rx="2" fill="#ddd"/>
       <rect x="22" y="103" width="30" height="24" rx="2" fill="#ddd"/>
-      <!-- A B buttons -->
       <circle cx="280" cy="100" r="12" fill="#3344cc"/>
       <circle cx="258" cy="118" r="12" fill="#cc3344"/>
-      <!-- Start/Select -->
       <rect x="130" y="165" width="25" height="8" rx="4" fill="#aaa"/>
       <rect x="170" y="165" width="25" height="8" rx="4" fill="#aaa"/>
-      <!-- Speaker dots -->
       <circle cx="255" cy="155" r="2" fill="#aa1122"/>
       <circle cx="265" cy="155" r="2" fill="#aa1122"/>
       <circle cx="275" cy="155" r="2" fill="#aa1122"/>
       <circle cx="260" cy="163" r="2" fill="#aa1122"/>
       <circle cx="270" cy="163" r="2" fill="#aa1122"/>
-      <!-- Bottom accent -->
       <rect x="130" y="185" width="80" height="12" rx="6" fill="#aa1122"/>
-      <!-- Pixel decoration -->
       <rect x="45" y="55" width="6" height="6" fill="#ee4455" opacity="0.6"/>
       <rect x="35" y="140" width="4" height="4" fill="#ffaaaa" opacity="0.4"/>
     </svg>
-    <!-- Screen content overlay -->
     <div class="gba-screen-content" id="gba-screen-content">
       <div class="screen-text" id="screen-main-text">
         FOR<br>MY<br>LOVE<br>♡
@@ -746,13 +699,11 @@
     <!-- Emergency -->
     <div class="card">
       <div class="card-title">♡ Acil Durum ♡</div>
-      <button class="emergency-btn" onclick="showNote()">
-        BURAYA BAS
-      </button>
+      <button class="emergency-btn" onclick="showNote()">BURAYA BAS</button>
       <div class="emergency-msg" id="emergency-msg"></div>
     </div>
 
-    <!-- Spotify -->
+    <!-- Spotify — FIX: embed/ URL + allow attribute -->
     <div class="card">
       <div class="card-title">🎧 Rahatlatıcı Müzik</div>
       <iframe
@@ -764,7 +715,6 @@
         allowfullscreen=""
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
         loading="lazy"
-        
       ></iframe>
     </div>
 
@@ -788,14 +738,16 @@
     <div class="page-header">🐒 Pixel Maymun</div>
     <div class="monkey-arena">
       <div class="monkey-display" id="monkey-display">
-        <span class="monkey-idle-emoji">🐒</span>
+        <span class="monkey-idle-emoji" id="monkey-idle-emoji">🐒</span>
         <video id="monkey-video" style="display:none; width:100%; height:100%; object-fit:cover;" playsinline webkit-playsinline></video>
+        <!-- FIX: sleep gif elementi baştan burada, gizli -->
+        <img id="monkey-sleep-gif" style="display:none; width:100%; height:100%; object-fit:cover;" alt="uyuyan maymun" />
       </div>
       <div class="monkey-reaction" id="monkey-reaction">Maymunu eğlendirmek için bir buton seç! 🍌</div>
       <div class="monkey-btns">
         <button class="monkey-btn" onclick="feedMonkey()">🍌 Muz Ver</button>
         <button class="monkey-btn" onclick="flipMonkey()">🤸 Takla Attır</button>
-        <button class="monkey-btn" onclick="resetMonkey()">💤 Uyut</button>
+        <button class="monkey-btn" onclick="sleepMonkey()">💤 Uyut</button>
       </div>
     </div>
   </div>
@@ -807,20 +759,17 @@
       <div class="library-subtitle" id="library-status">Pomodoro başlatınca birlikte masaya geçiyoruz ♡</div>
     </div>
 
-    <!-- Scene -->
     <div class="library-scene" id="library-scene">
-      <!-- Idle: still image -->
       <img
         class="scene-standing"
         src="assets/library-study-1.png"
         alt="Karakterler"
         id="scene-standing"
       />
-      <!-- Studying: looping video -->
+      <!-- FIX: video src boş başlıyor, JS ile set ediliyor — autoplay policy bypass -->
       <video
         class="scene-studying"
         id="scene-video"
-        src="assets/library-characters.mp4"
         loop
         muted
         playsinline
@@ -828,7 +777,6 @@
       ></video>
     </div>
 
-    <!-- Pomodoro -->
     <div class="pomodoro-card">
       <div class="pomodoro-label" id="pomo-mode-label">DERS ZAMANI</div>
       <div class="pomodoro-timer" id="pomo-display">25:00</div>
@@ -893,20 +841,16 @@ function startBoot() {
   booting = true;
 
   const intro = document.getElementById('intro-screen');
-  const boot = document.getElementById('boot-overlay');
   const screenText = document.getElementById('screen-main-text');
 
-  // Screen shows "BAŞLAT" effect
   screenText.innerHTML = 'BAŞLAT<br>YÜKLENIYOR<br>...';
   screenText.style.animation = 'none';
 
-  setTimeout(() => {
-    intro.classList.add('fade-out');
-  }, 400);
+  setTimeout(() => { intro.classList.add('fade-out'); }, 400);
 
   setTimeout(() => {
     intro.style.display = 'none';
-    boot.classList.add('active');
+    document.getElementById('boot-overlay').classList.add('active');
     runBootSequence();
   }, 1100);
 }
@@ -936,6 +880,10 @@ function runBootSequence() {
     document.getElementById('boot-overlay').classList.remove('active');
     document.getElementById('app').classList.add('visible');
     document.getElementById('bottom-nav').style.display = 'flex';
+    // FIX: video src'yi burada set et, kullanıcı etkileşiminden sonra yüklensin
+    const sceneVideo = document.getElementById('scene-video');
+    sceneVideo.src = 'assets/library-characters.mp4';
+    sceneVideo.load();
   }, delay + 600);
 }
 
@@ -1005,16 +953,12 @@ let breathePhaseIndex = 0;
 
 const breathePhases = [
   { name: 'Nefes AL', duration: 4, class: 'expand' },
-  { name: 'TUT', duration: 4, class: 'hold' },
-  { name: 'Nefes VER', duration: 4, class: 'shrink' },
+  { name: 'TUT',      duration: 4, class: 'hold'   },
+  { name: 'Nefes VER',duration: 4, class: 'shrink' },
 ];
 
 function toggleBreathe() {
-  if (breatheRunning) {
-    stopBreathe();
-  } else {
-    startBreathe();
-  }
+  breatheRunning ? stopBreathe() : startBreathe();
 }
 
 function startBreathe() {
@@ -1031,8 +975,7 @@ function stopBreathe() {
   document.getElementById('breathe-phase').textContent = '';
   document.getElementById('breathe-counter').textContent = '';
   document.getElementById('breathe-label').textContent = '4 al · 4 tut · 4 ver';
-  const vis = document.getElementById('breathe-visual');
-  vis.className = 'breathe-visual';
+  document.getElementById('breathe-visual').className = 'breathe-visual';
 }
 
 function runBreathePhase() {
@@ -1063,10 +1006,13 @@ function runBreathePhase() {
 
 /* ===========================
    MONKEY
+   FIX: resetMonkeyVisual() artık sleep gif'i de gizliyor
+        sleepMonkey() ayrı fonksiyon, resetMonkey() kaldırıldı
 =========================== */
-const monkeyVideo = document.getElementById('monkey-video');
-const monkeyDisplay = document.getElementById('monkey-display');
-const monkeyEmoji = monkeyDisplay.querySelector('.monkey-idle-emoji');
+const monkeyVideo    = document.getElementById('monkey-video');
+const monkeyDisplay  = document.getElementById('monkey-display');
+const monkeyEmoji    = document.getElementById('monkey-idle-emoji');
+const monkeySleepGif = document.getElementById('monkey-sleep-gif');
 
 const reactions = {
   feed: [
@@ -1088,63 +1034,57 @@ function feedMonkey() {
 function flipMonkey() {
   playMonkeyVideo('assets/monkey-flip.mp4', reactions.flip);
 }
-// Varsa sleep gif'i gizle
-const sleepGif = document.getElementById('monkey-sleep-gif');
-if (sleepGif) sleepGif.style.display = 'none';
+
 function playMonkeyVideo(src, reactionArr) {
-  monkeyEmoji.style.display = 'none';
-  monkeyVideo.style.display = 'block';
+  // Hepsini gizle, videoyu göster
+  monkeyEmoji.style.display    = 'none';
+  monkeySleepGif.style.display = 'none';  // FIX: gif'i de gizle
+  monkeyVideo.style.display    = 'block';
   monkeyVideo.src = src;
   monkeyVideo.load();
-  monkeyVideo.play().catch(() => {
-    // fallback: show emoji animation
-    resetMonkeyVisual();
-  });
+  monkeyVideo.play().catch(() => resetMonkeyVisual());
 
-  monkeyVideo.onended = () => {
-    resetMonkeyVisual();
-  };
+  monkeyVideo.onended = () => resetMonkeyVisual();
 
   const reaction = reactionArr[Math.floor(Math.random() * reactionArr.length)];
   document.getElementById('monkey-reaction').textContent = reaction;
   spawnHearts(3);
 }
 
+// FIX: resetMonkeyVisual artık gif'i de gizliyor
 function resetMonkeyVisual() {
-  monkeyVideo.style.display = 'none';
-  monkeyVideo.src = '';
-  monkeyEmoji.style.display = 'block';
+  monkeyVideo.pause();
+  monkeyVideo.style.display    = 'none';
+  monkeyVideo.src              = '';
+  monkeySleepGif.style.display = 'none';  // FIX
+  monkeyEmoji.style.display    = 'block';
 }
 
-function resetMonkey() {
+// FIX: uyku için ayrı temiz fonksiyon
+function sleepMonkey() {
+  monkeyVideo.pause();
   monkeyVideo.style.display = 'none';
-  monkeyVideo.src = '';
+  monkeyVideo.src           = '';
   monkeyEmoji.style.display = 'none';
-  
-  // GIF göster
-  let sleepGif = document.getElementById('monkey-sleep-gif');
-  if (!sleepGif) {
-    sleepGif = document.createElement('img');
-    sleepGif.id = 'monkey-sleep-gif';
-    sleepGif.style.cssText = 'width:100%; height:100%; object-fit:cover;';
-    monkeyDisplay.appendChild(sleepGif);
-  }
-  sleepGif.src = 'assets/monkey-sleep.gif';
-  sleepGif.style.display = 'block';
-  
+
+  monkeySleepGif.src          = 'assets/monkey-sleep.gif';
+  monkeySleepGif.style.display = 'block';
+
   document.getElementById('monkey-reaction').textContent = '💤 zzz... (uyuyor)';
 }
 
 /* ===========================
    POMODORO
+   FIX: tek bir scene/sceneVideo referansı, pomodoroReset'te tekrar const yok
 =========================== */
-let pomoTimer = null;
+let pomoTimer   = null;
 let pomoSeconds = 25 * 60;
 let pomoRunning = false;
-let pomoCount = 0;
-let pomoBreak = false;
+let pomoCount   = 0;
+let pomoBreak   = false;
 
-const scene = document.getElementById('library-scene');
+// Global referanslar — fonksiyonlarda const ile tekrar tanımlanmıyor
+const scene      = document.getElementById('library-scene');
 const sceneVideo = document.getElementById('scene-video');
 
 function updatePomoDisplay() {
@@ -1154,19 +1094,12 @@ function updatePomoDisplay() {
 }
 
 function pomodoroStart() {
-
-  const scene = document.getElementById('library-scene');
-  const sceneVideo = document.getElementById('scene-video');
-  scene.classList.add('studying');
-  sceneVideo.play().catch(() => {});  // autoplay policy için catch
-  document.getElementById('library-status').textContent = 'Birlikte çalışıyoruz! 📖♡';
-  
   if (pomoRunning) return;
   pomoRunning = true;
 
-  // Characters move to desk
+  // FIX: tek seferlik, duplicate yok
   scene.classList.add('studying');
-  sceneVideo.play();
+  sceneVideo.play().catch(() => {});
   document.getElementById('library-status').textContent = 'Çalışıyoruz... odaklan balım ♡';
 
   pomoTimer = setInterval(() => {
@@ -1180,21 +1113,19 @@ function pomodoroStart() {
       if (!pomoBreak) {
         pomoCount++;
         document.getElementById('pomo-count').textContent = `Toplam: ${pomoCount} pomodoro ♡`;
-        // Switch to break
-        pomoBreak = true;
+        pomoBreak   = true;
         pomoSeconds = 5 * 60;
         document.getElementById('pomo-mode-label').textContent = 'MOLA ZAMANI ☕';
-        document.getElementById('library-status').textContent = 'Mola veriyoruz, iyi iş çıkardın! ♡';
+        document.getElementById('library-status').textContent  = 'Mola veriyoruz, iyi iş çıkardın! ♡';
         scene.classList.remove('studying');
         sceneVideo.pause();
         updatePomoDisplay();
         spawnHearts(6);
       } else {
-        // Back to study
-        pomoBreak = false;
+        pomoBreak   = false;
         pomoSeconds = 25 * 60;
         document.getElementById('pomo-mode-label').textContent = 'DERS ZAMANI';
-        document.getElementById('library-status').textContent = 'Hazır mısın? Başlayalım ♡';
+        document.getElementById('library-status').textContent  = 'Hazır mısın? Başlayalım ♡';
         scene.classList.remove('studying');
         sceneVideo.pause();
         updatePomoDisplay();
@@ -1212,25 +1143,21 @@ function pomodoroPause() {
   document.getElementById('library-status').textContent = 'Duraklatıldı ♡';
 }
 
+// FIX: tekrar eden const scene / const sceneVideo satırları kaldırıldı
 function pomodoroReset() {
   clearInterval(pomoTimer);
   pomoRunning = false;
-  pomoBreak = false;
+  pomoBreak   = false;
   pomoSeconds = 25 * 60;
   document.getElementById('pomo-mode-label').textContent = 'DERS ZAMANI';
-  document.getElementById('library-status').textContent = 'Pomodoro başlatınca birlikte masaya geçiyoruz ♡';
+  document.getElementById('library-status').textContent  = 'Pomodoro başlatınca birlikte masaya geçiyoruz ♡';
   scene.classList.remove('studying');
   sceneVideo.pause();
   sceneVideo.currentTime = 0;
   updatePomoDisplay();
-   const scene = document.getElementById('library-scene');
-  const sceneVideo = document.getElementById('scene-video');
-  scene.classList.remove('studying');
-  sceneVideo.pause();
-  sceneVideo.currentTime = 0;
-  document.getElementById('library-status').textContent = 'Pomodoro başlatınca birlikte masaya geçiyoruz ♡';
 }
 
+// İlk yüklemede sayacı göster
 updatePomoDisplay();
 </script>
 </body>

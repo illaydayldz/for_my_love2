@@ -1091,7 +1091,9 @@ function feedMonkey() {
 function flipMonkey() {
   playMonkeyVideo('assets/monkey-flip.mp4', reactions.flip);
 }
-
+// Varsa sleep gif'i gizle
+const sleepGif = document.getElementById('monkey-sleep-gif');
+if (sleepGif) sleepGif.style.display = 'none';
 function playMonkeyVideo(src, reactionArr) {
   monkeyEmoji.style.display = 'none';
   monkeyVideo.style.display = 'block';
@@ -1118,7 +1120,21 @@ function resetMonkeyVisual() {
 }
 
 function resetMonkey() {
-  resetMonkeyVisual();
+  monkeyVideo.style.display = 'none';
+  monkeyVideo.src = '';
+  monkeyEmoji.style.display = 'none';
+  
+  // GIF göster
+  let sleepGif = document.getElementById('monkey-sleep-gif');
+  if (!sleepGif) {
+    sleepGif = document.createElement('img');
+    sleepGif.id = 'monkey-sleep-gif';
+    sleepGif.style.cssText = 'width:100%; height:100%; object-fit:cover;';
+    monkeyDisplay.appendChild(sleepGif);
+  }
+  sleepGif.src = 'assets/monkey-sleep.gif';
+  sleepGif.style.display = 'block';
+  
   document.getElementById('monkey-reaction').textContent = '💤 zzz... (uyuyor)';
 }
 

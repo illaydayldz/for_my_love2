@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="For My Love ♡" />
+  <meta name="theme-color" content="#1a0a2e" />
+  <title>For My Love ♡</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --pink: #ff6b9d;
+      --pink-light: #ffb3cc;
+      --pink-soft: #fff0f5;
+      --purple: #7c3aed;
+      --purple-dark: #1a0a2e;
+      --purple-mid: #2d1b5e;
+      --cream: #fff8f0;
+      --gold: #ffd700;
+      --text: #3d1a4e;
+      --text-soft: #7c5c8e;
+      --white: #ffffff;
+      --pixel: 'Press Start 2P', monospace;
+      --body: 'Nunito', sans-serif;
+      --radius: 16px;
+      --shadow: 0 8px 32px rgba(124,58,237,0.15);
+    }
+
+    html { scroll-behavior: smooth; }
+    
+    body {
+      font-family: var(--body);
+      background: var(--purple-dark);
+      color: var(--text);
+      min-height: 100dvh;
+      overflow-x: hidden;
+    }
+
+    /* ===== INTRO SCREEN ===== */
+    #intro-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--purple-dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      cursor: pointer;
+      transition: opacity 0.8s ease;
+    }
+
+    #intro-screen.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* GBA Console pixel art */
+    .gba-wrapper {
+      position: relative;
+      width: min(340px, 90vw);
+      animation: gba-float 3s ease-in-out infinite;
+    }
+
+    @keyframes gba-float {
+      0%, 100% { transform: translateY(0px) rotate(-3deg); }
+      50% { transform: translateY(-12px) rotate(-3deg); }
+    }
+
+    .gba-svg {
+      width: 100%;
+      filter: drop-shadow(0 20px 60px rgba(255,107,157,0.4));
+    }
+
+    /* Scanline overlay on GBA screen */
+    .gba-screen-content {
+      position: absolute;
+      top: 27%;
+      left: 28%;
+      width: 44%;
+      height: 30%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: #0a1628;
+    }
+
+    .screen-text {
+      font-family: var(--pixel);
+      font-size: clamp(5px, 1.8vw, 8px);
+      color: #7fff7f;
+      text-align: center;
+      line-height: 1.8;
+      text-shadow: 0 0 8px #7fff7f;
+      animation: screen-blink 1.2s infinite;
+    }
+
+    @keyframes screen-blink {
+      0%, 80% { opacity: 1; }
+      90% { opacity: 0.2; }
+      100% { opacity: 1; }
+    }
+
+    .stars-bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle var(--d) infinite var(--delay);
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.5); }
+    }
+
+    .intro-hint {
+      font-family: var(--pixel);
+      font-size: clamp(8px, 2.5vw, 11px);
+      color: var(--pink-light);
+      margin-top: 28px;
+      text-align: center;
+      animation: hint-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes hint-pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    /* Boot animation overlay */
+    #boot-overlay {
+      position: fixed;
+      inset: 0;
+      background: #0a0a0a;
+      z-index: 9998;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #boot-overlay.active { display: flex; }
+
+    .boot-line {
+      font-family: var(--pixel);
+      font-size: clamp(7px, 2vw, 10px);
+      color: #7fff7f;
+      margin: 4px 0;
+      opacity: 0;
+      transform: translateX(-20px);
+      animation: boot-appear 0.3s forwards;
+      max-width: 90vw;
+      text-align: left;
+    }
+
+    @keyframes boot-appear {
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ===== MAIN APP ===== */
+    #app {
+      display: none;
+      min-height: 100dvh;
+      background: var(--purple-dark);
+    }
+
+    #app.visible { display: block; }
+
+    /* NAV */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(480px, 100vw);
+      background: rgba(26,10,46,0.95);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255,107,157,0.2);
+      display: flex;
+      padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+      z-index: 100;
+    }
+
+    .nav-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: rgba(255,255,255,0.4);
+      font-family: var(--body);
+      font-size: 10px;
+      font-weight: 600;
+      transition: color 0.2s, transform 0.15s;
+    }
+
+    .nav-btn.active { color: var(--pink); }
+    .nav-btn:active { transform: scale(0.9); }
+    .nav-btn .nav-icon { font-size: 22px; }
+
+    /* PAGES */
+    .page {
+      display: none;
+      width: min(480px, 100vw);
+      margin: 0 auto;
+      min-height: 100dvh;
+      padding-bottom: 90px;
+    }
+
+    .page.active { display: block; }
+
+    /* ===== HOME PAGE ===== */
+    .home-hero {
+      padding: 32px 20px 24px;
+      text-align: center;
+    }
+
+    .couple-pixel {
+      width: min(220px, 60vw);
+      margin: 0 auto 20px;
+      display: block;
+      image-rendering: pixelated;
+      filter: drop-shadow(0 8px 24px rgba(255,107,157,0.3));
+      border-radius: 12px;
+    }
+
+    .home-greeting {
+      font-family: var(--pixel);
+      font-size: clamp(9px, 3vw, 12px);
+      color: var(--pink);
+      line-height: 2;
+      margin-bottom: 8px;
+    }
+
+    .home-subtitle {
+      font-size: 14px;
+      color: var(--pink-light);
+      line-height: 1.6;
+    }
+
+    /* Cards */
+    .card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,107,157,0.15);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 0 16px 16px;
+      backdrop-filter: blur(10px);
+    }
+
+    .card-title {
+      font-family: var(--pixel);
+      font-size: clamp(8px, 2.5vw, 10px);
+      color: var(--pink);
+      margin-bottom: 14px;
+      line-height: 1.8;
+    }
+
+    /* Emergency Button */
+    .emergency-btn {
+      width: 100%;
+      padding: 20px;
+      background: linear-gradient(135deg, var(--pink) 0%, #ff4488 100%);
+      border: none;
+      border-radius: 14px;
+      font-family: var(--pixel);
+      font-size: clamp(9px, 3vw, 11px);
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(255,107,157,0.4);
+      transition: transform 0.15s, box-shadow 0.15s;
+      position: relative;
+      overflow: hidden;
+      line-height: 2;
+    }
+
+    .emergency-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 50%);
+    }
+
+    .emergency-btn:active {
+      transform: scale(0.97);
+      box-shadow: 0 4px 12px rgba(255,107,157,0.3);
+    }
+
+    .emergency-msg {
+      margin-top: 16px;
+      padding: 14px;
+      background: rgba(255,107,157,0.1);
+      border-radius: 10px;
+      border-left: 3px solid var(--pink);
+      font-size: 14px;
+      color: var(--pink-light);
+      line-height: 1.6;
+      display: none;
+    }
+
+    .emergency-msg.show { display: block; animation: msg-appear 0.4s ease; }
+
+    @keyframes msg-appear {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Spotify */
+    .spotify-frame {
+      border-radius: 12px;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    /* ===== MONKEY PAGE ===== */
+    .monkey-arena {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+      gap: 20px;
+    }
+
+    .monkey-display {
+      width: min(280px, 85vw);
+      height: min(280px, 85vw);
+      background: rgba(0,0,0,0.3);
+      border-radius: 20px;
+      border: 2px solid rgba(255,107,157,0.2);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .monkey-display video,
+    .monkey-display img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .monkey-display .monkey-idle-emoji {
+      font-size: 80px;
+      animation: monkey-idle-anim 2s ease-in-out infinite;
+    }
+
+    @keyframes monkey-idle-anim {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50% { transform: translateY(-8px) rotate(3deg); }
+    }
+
+    .monkey-reaction {
+      font-family: var(--pixel);
+      font-size: clamp(8px, 2.5vw, 10px);
+      color: var(--pink-light);
+      text-align: center;
+      min-height: 36px;
+      line-height: 2;
+      padding: 0 20px;
+    }
+
+    .monkey-btns {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .monkey-btn {
+      padding: 14px 22px;
+      border: 2px solid var(--pink);
+      border-radius: 12px;
+      background: rgba(255,107,157,0.1);
+      color: var(--pink);
+      font-family: var(--pixel);
+      font-size: clamp(8px, 2.5vw, 9px);
+      cursor: pointer;
+      transition: all 0.2s;
+      line-height: 1.8;
+    }
+
+    .monkey-btn:active {
+      background: var(--pink);
+      color: white;
+      transform: scale(0.95);
+    }
+
+    /* ===== LIBRARY PAGE ===== */
+    .library-page {
+      background: linear-gradient(180deg, #0f0520 0%, #1a0a2e 100%);
+    }
+
+    .library-header {
+      padding: 24px 20px 16px;
+      text-align: center;
+    }
+
+    .library-title {
+      font-family: var(--pixel);
+      font-size: clamp(9px, 3vw, 11px);
+      color: var(--pink);
+      margin-bottom: 8px;
+      line-height: 2;
+    }
+
+    .library-subtitle {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* Characters */
+    .library-scene {
+      margin: 0 16px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #0a0818;
+      position: relative;
+      min-height: 220px;
+    }
+
+    .scene-standing,
+    .scene-studying {
+      width: 100%;
+      display: block;
+      transition: opacity 0.6s ease;
+    }
+
+    .scene-studying {
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+    }
+
+    .library-scene.studying .scene-standing { opacity: 0; }
+    .library-scene.studying .scene-studying { opacity: 1; }
+
+    /* Pomodoro */
+    .pomodoro-card {
+      margin: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,107,157,0.15);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      text-align: center;
+    }
+
+    .pomodoro-timer {
+      font-family: var(--pixel);
+      font-size: clamp(28px, 10vw, 42px);
+      color: var(--white);
+      margin: 16px 0;
+      text-shadow: 0 0 30px rgba(255,107,157,0.5);
+      letter-spacing: 2px;
+    }
+
+    .pomodoro-label {
+      font-size: 12px;
+      color: var(--pink-light);
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .pomodoro-btns {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .pomo-btn {
+      padding: 12px 20px;
+      border-radius: 10px;
+      border: none;
+      font-family: var(--pixel);
+      font-size: clamp(7px, 2.2vw, 9px);
+      cursor: pointer;
+      transition: all 0.2s;
+      line-height: 1.8;
+    }
+
+    .pomo-btn.start {
+      background: linear-gradient(135deg, var(--pink), #ff4488);
+      color: white;
+      box-shadow: 0 4px 16px rgba(255,107,157,0.4);
+    }
+
+    .pomo-btn.pause {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .pomo-btn.reset {
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.6);
+    }
+
+    .pomo-btn:active { transform: scale(0.95); }
+
+    .pomo-count {
+      margin-top: 16px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    /* ===== BREATHE BOX ===== */
+    .breathe-section {
+      padding: 0 16px 16px;
+    }
+
+    .breathe-box-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 20px;
+      background: rgba(124,58,237,0.1);
+      border-radius: 14px;
+      border: 1px solid rgba(124,58,237,0.2);
+    }
+
+    .breathe-label {
+      font-family: var(--pixel);
+      font-size: clamp(7px, 2.2vw, 9px);
+      color: var(--purple);
+      color: #a78bfa;
+      text-align: center;
+      line-height: 2;
+    }
+
+    .breathe-visual {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(167,139,250,0.3) 0%, rgba(124,58,237,0.1) 70%);
+      border: 2px solid #a78bfa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      transition: transform 4s ease-in-out;
+    }
+
+    .breathe-visual.expand {
+      transform: scale(1.5);
+      background: radial-gradient(circle, rgba(167,139,250,0.5) 0%, rgba(124,58,237,0.2) 70%);
+    }
+
+    .breathe-visual.hold {
+      transform: scale(1.5);
+    }
+
+    .breathe-visual.shrink {
+      transform: scale(1);
+    }
+
+    .breathe-phase {
+      font-size: 13px;
+      color: #a78bfa;
+      font-weight: 700;
+      text-align: center;
+      min-height: 20px;
+    }
+
+    .breathe-counter {
+      font-family: var(--pixel);
+      font-size: clamp(14px, 5vw, 20px);
+      color: white;
+    }
+
+    .breathe-start-btn {
+      padding: 12px 28px;
+      background: linear-gradient(135deg, #7c3aed, #a78bfa);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-family: var(--pixel);
+      font-size: clamp(7px, 2.2vw, 9px);
+      cursor: pointer;
+      line-height: 1.8;
+      transition: transform 0.2s;
+    }
+
+    .breathe-start-btn:active { transform: scale(0.95); }
+
+    /* HEARTS FLOAT */
+    .floating-hearts {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+    }
+
+    .heart-particle {
+      position: absolute;
+      font-size: 20px;
+      animation: float-heart 3s ease-out forwards;
+    }
+
+    @keyframes float-heart {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-150px) scale(0.5); }
+    }
+
+    /* PAGE HEADER */
+    .page-header {
+      padding: 20px 20px 8px;
+      font-family: var(--pixel);
+      font-size: clamp(9px, 3vw, 12px);
+      color: var(--pink);
+      line-height: 2;
+    }
+
+    /* ===== UTILS ===== */
+    .hearts-divider {
+      text-align: center;
+      color: rgba(255,107,157,0.3);
+      font-size: 18px;
+      padding: 4px 0;
+      letter-spacing: 8px;
+    }
+
+    .love-footer {
+      text-align: center;
+      padding: 16px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+      font-style: italic;
+    }
+
+    /* pixel corners */
+    .pixel-corner {
+      image-rendering: pixelated;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,107,157,0.3); border-radius: 2px; }
+
+    /* ===== TRANSITIONS ===== */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== STARS BACKGROUND ===== -->
+<div class="stars-bg" id="stars-bg"></div>
+
+<!-- ===== FLOATING HEARTS CONTAINER ===== -->
+<div class="floating-hearts" id="floating-hearts"></div>
+
+<!-- ===== INTRO SCREEN ===== -->
+<div id="intro-screen" onclick="startBoot()">
+  <div class="gba-wrapper">
+    <!-- GBA SVG pixel art -->
+    <svg class="gba-svg" viewBox="0 0 340 220" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <!-- Body -->
+      <rect x="20" y="10" width="300" height="190" rx="40" ry="40" fill="#cc2233"/>
+      <!-- Top accent -->
+      <rect x="30" y="10" width="280" height="20" rx="20" ry="20" fill="#dd3344"/>
+      <!-- Screen bezel -->
+      <rect x="80" y="35" width="185" height="130" rx="8" fill="#222"/>
+      <!-- Screen -->
+      <rect x="88" y="42" width="169" height="116" rx="4" fill="#0a1628"/>
+      <!-- Screen shine -->
+      <rect x="90" y="44" width="80" height="4" rx="2" fill="rgba(255,255,255,0.12)"/>
+      <!-- D-pad -->
+      <rect x="30" y="95" width="14" height="40" rx="2" fill="#ddd"/>
+      <rect x="22" y="103" width="30" height="24" rx="2" fill="#ddd"/>
+      <!-- A B buttons -->
+      <circle cx="280" cy="100" r="12" fill="#3344cc"/>
+      <circle cx="258" cy="118" r="12" fill="#cc3344"/>
+      <!-- Start/Select -->
+      <rect x="130" y="165" width="25" height="8" rx="4" fill="#aaa"/>
+      <rect x="170" y="165" width="25" height="8" rx="4" fill="#aaa"/>
+      <!-- Speaker dots -->
+      <circle cx="255" cy="155" r="2" fill="#aa1122"/>
+      <circle cx="265" cy="155" r="2" fill="#aa1122"/>
+      <circle cx="275" cy="155" r="2" fill="#aa1122"/>
+      <circle cx="260" cy="163" r="2" fill="#aa1122"/>
+      <circle cx="270" cy="163" r="2" fill="#aa1122"/>
+      <!-- Bottom accent -->
+      <rect x="130" y="185" width="80" height="12" rx="6" fill="#aa1122"/>
+      <!-- Pixel decoration -->
+      <rect x="45" y="55" width="6" height="6" fill="#ee4455" opacity="0.6"/>
+      <rect x="35" y="140" width="4" height="4" fill="#ffaaaa" opacity="0.4"/>
+    </svg>
+    <!-- Screen content overlay -->
+    <div class="gba-screen-content" id="gba-screen-content">
+      <div class="screen-text" id="screen-main-text">
+        FOR<br>MY<br>LOVE<br>♡
+      </div>
+    </div>
+  </div>
+  <div class="intro-hint">— dokun &amp; başlat —</div>
+</div>
+
+<!-- ===== BOOT OVERLAY ===== -->
+<div id="boot-overlay">
+  <div id="boot-lines"></div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="app">
+
+  <!-- HOME PAGE -->
+  <div class="page active" id="page-home">
+    <div class="home-hero">
+      <img
+        class="couple-pixel"
+        src="assets/couple-pixel.png"
+        onerror="this.src='https://illaydayldz.github.io/for-my-love/assets/pixel-preview.png'; this.onerror=null;"
+        alt="Pixel art çiftimiz"
+      />
+      <div class="home-greeting">Merhaba balım ♡</div>
+      <div class="home-subtitle">Stres yaparsan buraya gel. Hep yanındayım. 💕</div>
+    </div>
+
+    <!-- Emergency -->
+    <div class="card">
+      <div class="card-title">♡ Acil Durum ♡</div>
+      <button class="emergency-btn" onclick="showNote()">
+        BURAYA BAS
+      </button>
+      <div class="emergency-msg" id="emergency-msg"></div>
+    </div>
+
+    <!-- Spotify -->
+    <div class="card">
+      <div class="card-title">🎧 Rahatlatıcı Müzik</div>
+      <iframe
+        class="spotify-frame"
+        src="https://open.spotify.com/embed/playlist/37i9dQZF1DX3rxVfibe1L0?utm_source=generator&theme=0"
+        width="100%"
+        height="152"
+        frameBorder="0"
+        allowfullscreen=""
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy"
+      ></iframe>
+    </div>
+
+    <!-- Breathe Box -->
+    <div class="card breathe-section">
+      <div class="card-title">☁️ Nefes Kutusu</div>
+      <div class="breathe-box-wrapper">
+        <div class="breathe-label" id="breathe-label">4 al · 4 tut · 4 ver</div>
+        <div class="breathe-visual" id="breathe-visual">☁️</div>
+        <div class="breathe-phase" id="breathe-phase"></div>
+        <div class="breathe-counter" id="breathe-counter"></div>
+        <button class="breathe-start-btn" id="breathe-btn" onclick="toggleBreathe()">BAŞLAT</button>
+      </div>
+    </div>
+
+    <div class="love-footer">ne olursa olsun, seninle gurur duyuyorum ♡</div>
+  </div>
+
+  <!-- MONKEY PAGE -->
+  <div class="page" id="page-monkey">
+    <div class="page-header">🐒 Pixel Maymun</div>
+    <div class="monkey-arena">
+      <div class="monkey-display" id="monkey-display">
+        <span class="monkey-idle-emoji">🐒</span>
+        <video id="monkey-video" style="display:none; width:100%; height:100%; object-fit:cover;" playsinline webkit-playsinline></video>
+      </div>
+      <div class="monkey-reaction" id="monkey-reaction">Maymunu eğlendirmek için bir buton seç! 🍌</div>
+      <div class="monkey-btns">
+        <button class="monkey-btn" onclick="feedMonkey()">🍌 Muz Ver</button>
+        <button class="monkey-btn" onclick="flipMonkey()">🤸 Takla Attır</button>
+        <button class="monkey-btn" onclick="resetMonkey()">💤 Uyut</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIBRARY PAGE -->
+  <div class="page library-page" id="page-library">
+    <div class="library-header">
+      <div class="library-title">📚 Bizim Kütüphane</div>
+      <div class="library-subtitle" id="library-status">Pomodoro başlatınca birlikte masaya geçiyoruz ♡</div>
+    </div>
+
+    <!-- Scene -->
+    <div class="library-scene" id="library-scene">
+      <!-- Idle: still image -->
+      <img
+        class="scene-standing"
+        src="assets/library-study-1.png"
+        alt="Karakterler"
+        id="scene-standing"
+      />
+      <!-- Studying: looping video -->
+      <video
+        class="scene-studying"
+        id="scene-video"
+        src="assets/library-characters.mp4"
+        loop
+        muted
+        playsinline
+        webkit-playsinline
+      ></video>
+    </div>
+
+    <!-- Pomodoro -->
+    <div class="pomodoro-card">
+      <div class="pomodoro-label" id="pomo-mode-label">DERS ZAMANI</div>
+      <div class="pomodoro-timer" id="pomo-display">25:00</div>
+      <div class="pomodoro-btns">
+        <button class="pomo-btn start" onclick="pomodoroStart()">BAŞLAT</button>
+        <button class="pomo-btn pause" onclick="pomodoroPause()">DURAKLAT</button>
+        <button class="pomo-btn reset" onclick="pomodoroReset()">SIFIRLA</button>
+      </div>
+      <div class="pomo-count" id="pomo-count">Toplam: 0 pomodoro ♡</div>
+    </div>
+
+    <div class="love-footer">seninle gurur duyuyorum ♡</div>
+  </div>
+
+</div><!-- /#app -->
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav" id="bottom-nav" style="display:none;">
+  <button class="nav-btn active" onclick="switchPage('home', this)" id="nav-home">
+    <span class="nav-icon">♡</span>
+    Ana
+  </button>
+  <button class="nav-btn" onclick="switchPage('monkey', this)" id="nav-monkey">
+    <span class="nav-icon">🐒</span>
+    Maymun
+  </button>
+  <button class="nav-btn" onclick="switchPage('library', this)" id="nav-library">
+    <span class="nav-icon">📚</span>
+    Kütüphane
+  </button>
+</nav>
+
+<script>
+/* ===========================
+   STARS
+=========================== */
+(function() {
+  const bg = document.getElementById('stars-bg');
+  for (let i = 0; i < 60; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.cssText = `
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      --d:${2 + Math.random()*3}s;
+      --delay:${Math.random()*3}s;
+      width:${Math.random() > 0.7 ? 3 : 2}px;
+      height:${Math.random() > 0.7 ? 3 : 2}px;
+      opacity:${0.2 + Math.random()*0.5};
+    `;
+    bg.appendChild(s);
+  }
+})();
+
+/* ===========================
+   INTRO & BOOT
+=========================== */
+let booting = false;
+
+function startBoot() {
+  if (booting) return;
+  booting = true;
+
+  const intro = document.getElementById('intro-screen');
+  const boot = document.getElementById('boot-overlay');
+  const screenText = document.getElementById('screen-main-text');
+
+  // Screen shows "BAŞLAT" effect
+  screenText.innerHTML = 'BAŞLAT<br>YÜKLENIYOR<br>...';
+  screenText.style.animation = 'none';
+
+  setTimeout(() => {
+    intro.classList.add('fade-out');
+  }, 400);
+
+  setTimeout(() => {
+    intro.style.display = 'none';
+    boot.classList.add('active');
+    runBootSequence();
+  }, 1100);
+}
+
+function runBootSequence() {
+  const lines = [
+    'LOVE OS v2.0 başlatılıyor...',
+    'Balım için özel mod: AKTİF ♡',
+    'Pixel karakterler yükleniyor...',
+    'Müzik listesi hazırlanıyor...',
+    'Pomodoro zamanlayıcı hazır...',
+    '> Sistem hazır. İyi çalışmalar ♡',
+  ];
+
+  const container = document.getElementById('boot-lines');
+  let delay = 0;
+
+  lines.forEach((line, i) => {
+    delay += i === 0 ? 100 : 420;
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'boot-line';
+      el.textContent = line;
+      el.style.animationDelay = '0ms';
+      el.style.color = i === lines.length - 1 ? '#ff6b9d' : '#7fff7f';
+      container.appendChild(el);
+    }, delay);
+  });
+
+  setTimeout(() => {
+    document.getElementById('boot-overlay').classList.remove('active');
+    document.getElementById('app').classList.add('visible');
+    document.getElementById('bottom-nav').style.display = 'flex';
+  }, delay + 600);
+}
+
+/* ===========================
+   PAGE NAVIGATION
+=========================== */
+function switchPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ===========================
+   EMERGENCY NOTES
+=========================== */
+const notes = [
+  'Seni çok seviyorum. Bu da geçecek. 💕',
+  'Sen çok güçlüsün. Her şeyi halledersin. ♡',
+  'Bir adım at, sadece bir adım. Yanındayım.',
+  'Derin nefes al. Her şey yoluna girecek. 🌸',
+  'En zor anlarda bile parıldıyorsun. ✨',
+  'Bugünü atlayabilirsin. Bana güven. ♡',
+  'Seni gördükçe dünyam güzelleşiyor. 💫',
+  'Mola vermek de çalışmaktır. 🫶',
+  'Sen her şeyin üstesinden gelirsin balım. ♡',
+  'Yorulursan dinlen, bırakma. İkisi farklı. 🌙',
+];
+
+let lastNote = -1;
+
+function showNote() {
+  let idx;
+  do { idx = Math.floor(Math.random() * notes.length); } while (idx === lastNote);
+  lastNote = idx;
+
+  const msg = document.getElementById('emergency-msg');
+  msg.textContent = notes[idx];
+  msg.className = 'emergency-msg';
+  void msg.offsetWidth;
+  msg.classList.add('show');
+  spawnHearts(5);
+}
+
+function spawnHearts(n) {
+  const container = document.getElementById('floating-hearts');
+  const symbols = ['♡', '💕', '🌸', '✨', '💖'];
+  for (let i = 0; i < n; i++) {
+    setTimeout(() => {
+      const h = document.createElement('div');
+      h.className = 'heart-particle';
+      h.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      h.style.left = (20 + Math.random() * 60) + '%';
+      h.style.bottom = '80px';
+      container.appendChild(h);
+      setTimeout(() => h.remove(), 3000);
+    }, i * 120);
+  }
+}
+
+/* ===========================
+   BREATHE BOX
+=========================== */
+let breatheRunning = false;
+let breatheTimeout = null;
+let breathePhaseIndex = 0;
+
+const breathePhases = [
+  { name: 'Nefes AL', duration: 4, class: 'expand' },
+  { name: 'TUT', duration: 4, class: 'hold' },
+  { name: 'Nefes VER', duration: 4, class: 'shrink' },
+];
+
+function toggleBreathe() {
+  if (breatheRunning) {
+    stopBreathe();
+  } else {
+    startBreathe();
+  }
+}
+
+function startBreathe() {
+  breatheRunning = true;
+  document.getElementById('breathe-btn').textContent = 'DURDUR';
+  breathePhaseIndex = 0;
+  runBreathePhase();
+}
+
+function stopBreathe() {
+  breatheRunning = false;
+  clearTimeout(breatheTimeout);
+  document.getElementById('breathe-btn').textContent = 'BAŞLAT';
+  document.getElementById('breathe-phase').textContent = '';
+  document.getElementById('breathe-counter').textContent = '';
+  document.getElementById('breathe-label').textContent = '4 al · 4 tut · 4 ver';
+  const vis = document.getElementById('breathe-visual');
+  vis.className = 'breathe-visual';
+}
+
+function runBreathePhase() {
+  if (!breatheRunning) return;
+  const phase = breathePhases[breathePhaseIndex % breathePhases.length];
+  const vis = document.getElementById('breathe-visual');
+  const phaseEl = document.getElementById('breathe-phase');
+  const counterEl = document.getElementById('breathe-counter');
+
+  phaseEl.textContent = phase.name;
+  vis.className = 'breathe-visual ' + phase.class;
+
+  let secs = phase.duration;
+  counterEl.textContent = secs;
+
+  const tick = setInterval(() => {
+    secs--;
+    counterEl.textContent = secs > 0 ? secs : '';
+    if (secs <= 0) {
+      clearInterval(tick);
+      if (breatheRunning) {
+        breathePhaseIndex++;
+        breatheTimeout = setTimeout(runBreathePhase, 300);
+      }
+    }
+  }, 1000);
+}
+
+/* ===========================
+   MONKEY
+=========================== */
+const monkeyVideo = document.getElementById('monkey-video');
+const monkeyDisplay = document.getElementById('monkey-display');
+const monkeyEmoji = monkeyDisplay.querySelector('.monkey-idle-emoji');
+
+const reactions = {
+  feed: [
+    'MUHTEŞEM! Maymun muzu yedi! 🍌',
+    'MMMmm muz! En sevdiği! 🍌✨',
+    'Mutlu maymun = mutlu hayat 🐒💕',
+  ],
+  flip: [
+    'TAKLAAA! Bir daha? 🤸‍♂️',
+    'Profesyonel takla! 🤸 Bravo!',
+    '360 derece! Muhteşem! 🌀',
+  ],
+};
+
+function feedMonkey() {
+  playMonkeyVideo('assets/monkey-eat.mp4', reactions.feed);
+}
+
+function flipMonkey() {
+  playMonkeyVideo('assets/monkey-flip.mp4', reactions.flip);
+}
+
+function playMonkeyVideo(src, reactionArr) {
+  monkeyEmoji.style.display = 'none';
+  monkeyVideo.style.display = 'block';
+  monkeyVideo.src = src;
+  monkeyVideo.load();
+  monkeyVideo.play().catch(() => {
+    // fallback: show emoji animation
+    resetMonkeyVisual();
+  });
+
+  monkeyVideo.onended = () => {
+    resetMonkeyVisual();
+  };
+
+  const reaction = reactionArr[Math.floor(Math.random() * reactionArr.length)];
+  document.getElementById('monkey-reaction').textContent = reaction;
+  spawnHearts(3);
+}
+
+function resetMonkeyVisual() {
+  monkeyVideo.style.display = 'none';
+  monkeyVideo.src = '';
+  monkeyEmoji.style.display = 'block';
+}
+
+function resetMonkey() {
+  resetMonkeyVisual();
+  document.getElementById('monkey-reaction').textContent = '💤 zzz... (uyuyor)';
+}
+
+/* ===========================
+   POMODORO
+=========================== */
+let pomoTimer = null;
+let pomoSeconds = 25 * 60;
+let pomoRunning = false;
+let pomoCount = 0;
+let pomoBreak = false;
+
+const scene = document.getElementById('library-scene');
+const sceneVideo = document.getElementById('scene-video');
+
+function updatePomoDisplay() {
+  const m = String(Math.floor(pomoSeconds / 60)).padStart(2, '0');
+  const s = String(pomoSeconds % 60).padStart(2, '0');
+  document.getElementById('pomo-display').textContent = m + ':' + s;
+}
+
+function pomodoroStart() {
+  if (pomoRunning) return;
+  pomoRunning = true;
+
+  // Characters move to desk
+  scene.classList.add('studying');
+  sceneVideo.play();
+  document.getElementById('library-status').textContent = 'Çalışıyoruz... odaklan balım ♡';
+
+  pomoTimer = setInterval(() => {
+    if (pomoSeconds > 0) {
+      pomoSeconds--;
+      updatePomoDisplay();
+    } else {
+      clearInterval(pomoTimer);
+      pomoRunning = false;
+
+      if (!pomoBreak) {
+        pomoCount++;
+        document.getElementById('pomo-count').textContent = `Toplam: ${pomoCount} pomodoro ♡`;
+        // Switch to break
+        pomoBreak = true;
+        pomoSeconds = 5 * 60;
+        document.getElementById('pomo-mode-label').textContent = 'MOLA ZAMANI ☕';
+        document.getElementById('library-status').textContent = 'Mola veriyoruz, iyi iş çıkardın! ♡';
+        scene.classList.remove('studying');
+        sceneVideo.pause();
+        updatePomoDisplay();
+        spawnHearts(6);
+      } else {
+        // Back to study
+        pomoBreak = false;
+        pomoSeconds = 25 * 60;
+        document.getElementById('pomo-mode-label').textContent = 'DERS ZAMANI';
+        document.getElementById('library-status').textContent = 'Hazır mısın? Başlayalım ♡';
+        scene.classList.remove('studying');
+        sceneVideo.pause();
+        updatePomoDisplay();
+      }
+    }
+  }, 1000);
+}
+
+function pomodoroPause() {
+  if (!pomoRunning) return;
+  clearInterval(pomoTimer);
+  pomoRunning = false;
+  scene.classList.remove('studying');
+  sceneVideo.pause();
+  document.getElementById('library-status').textContent = 'Duraklatıldı ♡';
+}
+
+function pomodoroReset() {
+  clearInterval(pomoTimer);
+  pomoRunning = false;
+  pomoBreak = false;
+  pomoSeconds = 25 * 60;
+  document.getElementById('pomo-mode-label').textContent = 'DERS ZAMANI';
+  document.getElementById('library-status').textContent = 'Pomodoro başlatınca birlikte masaya geçiyoruz ♡';
+  scene.classList.remove('studying');
+  sceneVideo.pause();
+  sceneVideo.currentTime = 0;
+  updatePomoDisplay();
+}
+
+updatePomoDisplay();
+</script>
+</body>
+</html>
